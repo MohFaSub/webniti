@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NiTi — AI Competency & Career Navigation for Higher Education</title>
+  <style>
+    :root{
+      --bg:#f8fafc;
+      --panel:#ffffff;
+      --panel-2:#f1f5f9;
+      --line:#e2e8f0;
+      --text:#0f172a;
+      --muted:#64748b;
+      --navy:#0f172a;
+      --teal:#14b8a6;
+      --blue:#2563eb;
+      --green:#22c55e;
+      --amber:#f59e0b;
+      --red:#ef4444;
+      --shadow:0 18px 60px rgba(15,23,42,.10);
+      --shadow-soft:0 10px 30px rgba(15,23,42,.06);
+      --radius:26px;
+      --radius-lg:32px;
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(20,184,166,.08), transparent 25%),
+        radial-gradient(circle at top left, rgba(37,99,235,.07), transparent 22%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 46%, #ffffff 100%);
+    }
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+    .container{max-width:var(--max);margin:0 auto;padding:0 22px}
+    .nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(255,255,255,.84);
+      backdrop-filter:blur(18px);
+      border-bottom:1px solid rgba(226,232,240,.9);
+    }
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand-mark{
+      width:46px;height:46px;border-radius:16px;background:var(--navy);color:#fff;
+      display:grid;place-items:center;font-weight:700;letter-spacing:.12em;
+      box-shadow:var(--shadow-soft)
+    }
+    .brand-title{font-size:15px;font-weight:700;line-height:1.1}
+    .brand-sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .nav-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .chip{
+      border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;
+      color:#475569;font-size:13px;cursor:pointer;transition:.25s ease;box-shadow:0 6px 18px rgba(15,23,42,.03)
+    }
+    .chip:hover{transform:translateY(-1px);border-color:#cbd5e1}
+    .chip.active{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:var(--shadow-soft)}
+    .hero-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:28px;align-items:center;padding:44px 0 18px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;
+      border:1px solid var(--line);background:#fff;color:#475569;font-size:12px;font-weight:600;
+      box-shadow:var(--shadow-soft)
+    }
+    .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 6px rgba(20,184,166,.12)}
+    h1{font-size:clamp(2.5rem,5vw,4.8rem);line-height:1.03;letter-spacing:-.04em;margin:18px 0 18px}
+    h2{font-size:clamp(2rem,3.1vw,3.1rem);line-height:1.08;letter-spacing:-.03em;margin:0}
+    p.lead{font-size:clamp(1rem,1.25vw,1.12rem);line-height:1.8;color:#475569;max-width:58ch}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+    .btn{
+      border:0;border-radius:999px;padding:14px 18px;cursor:pointer;transition:.25s ease;
+      display:inline-flex;align-items:center;gap:10px;font-weight:700
+    }
+    .btn-primary{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+    .btn-primary:hover{transform:translateY(-1px);background:#111827}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--line)}
+    .btn-secondary:hover{transform:translateY(-1px);border-color:#cbd5e1}
+    .hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+    .mini-card{
+      background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow-soft)
+    }
+    .mini-num{font-size:1.6rem;font-weight:800;letter-spacing:-.03em}
+    .mini-txt{font-size:.83rem;color:var(--muted);margin-top:4px;line-height:1.45}
+    .stage{
+      position:relative;min-height:520px;border-radius:var(--radius-lg);overflow:hidden;background:
+        linear-gradient(180deg,#fff 0%,#f8fafc 100%);
+      border:1px solid rgba(226,232,240,.9);box-shadow:var(--shadow)
+    }
+    .stage-top{
+      padding:22px 24px;border-bottom:1px solid var(--line);
+      background:linear-gradient(90deg,#fff, #f8fafc, #ecfeff)
+    }
+    .stage-top small{display:block;color:#64748b;letter-spacing:.18em;text-transform:uppercase;font-size:11px}
+    .stage-top strong{display:block;margin-top:6px;font-size:1.3rem;letter-spacing:-.02em}
+    .canvas{
+      position:relative;height:420px;background:
+        radial-gradient(circle at center, rgba(20,184,166,.09), transparent 36%),
+        linear-gradient(180deg,#ffffff,#f8fafc)
+    }
+    .diagram-node{
+      position:absolute;transform:translate(-50%,-50%);text-align:center
+    }
+    .node-icon{
+      width:76px;height:76px;border-radius:26px;background:#fff;border:1px solid var(--line);
+      display:grid;place-items:center;box-shadow:0 18px 36px rgba(15,23,42,.08);font-size:1.45rem;font-weight:800
+    }
+    .node-label{margin-top:10px;font-size:.9rem;color:#334155;font-weight:600}
+    .engine-core{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:192px;height:192px;border-radius:999px;background:#fff;border:1px solid #fff;
+      box-shadow:0 0 0 10px rgba(20,184,166,.10), 0 26px 70px rgba(15,23,42,.14);
+      display:grid;place-items:center;text-align:center
+    }
+    .engine-core:before{
+      content:"";position:absolute;inset:12px;border-radius:999px;background:linear-gradient(135deg,#effaf8,#ffffff,#eff6ff)
+    }
+    .engine-core > div{position:relative}
+    .engine-logo{width:60px;height:60px;border-radius:18px;background:var(--navy);color:#fff;display:grid;place-items:center;margin:0 auto 8px;font-size:1.2rem}
+    .engine-title{font-size:2rem;font-weight:800;letter-spacing:-.03em}
+    .engine-sub{font-size:.72rem;color:#64748b;letter-spacing:.2em;text-transform:uppercase;margin-top:3px}
+    svg.flow-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+    .section{padding:38px 0}
+    .title-row{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}
+    .kicker{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);background:#fff;
+      border-radius:999px;font-size:12px;font-weight:700;color:#475569;box-shadow:var(--shadow-soft)
+    }
+    .kicker .spark{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 6px rgba(20,184,166,.12)}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .card{
+      background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow-soft);overflow:hidden
+    }
+    .card.pad{padding:20px}
+    .card h3{margin:0 0 8px;font-size:1.1rem;letter-spacing:-.02em}
+    .card p{margin:0;color:#64748b;line-height:1.7;font-size:.96rem}
+    .stat{
+      font-size:2.6rem;font-weight:850;letter-spacing:-.05em;line-height:1
+    }
+    .stat-sub{margin-top:10px;color:#64748b;line-height:1.6;font-size:.95rem}
+    .source-card .head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .icon-box{
+      width:48px;height:48px;border-radius:16px;display:grid;place-items:center;color:#fff;flex:none
+    }
+    .bullet-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+    .bullet-list li{display:flex;gap:10px;align-items:flex-start;color:#334155;font-size:.95rem;line-height:1.55}
+    .check{width:18px;height:18px;flex:none;margin-top:2px;color:var(--green)}
+    .stakeholder-stage{
+      position:relative;min-height:680px;border-radius:var(--radius-lg);overflow:hidden;
+      background:radial-gradient(circle at center, rgba(20,184,166,.10), transparent 36%), linear-gradient(180deg,#fff,#f8fafc);
+      border:1px solid var(--line);box-shadow:var(--shadow)
+    }
+    .circle-core{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:132px;height:132px;border-radius:999px;background:var(--navy);color:#fff;
+      border:1px solid rgba(255,255,255,.75);box-shadow:0 24px 70px rgba(15,23,42,.18);display:grid;place-items:center;text-align:center
+    }
+    .circle-core .core-logo{width:42px;height:42px;border-radius:14px;background:#fff;color:var(--navy);display:grid;place-items:center;margin:0 auto 8px;font-weight:800}
+    .circle-core .core-title{font-size:1.25rem;font-weight:800}
+    .circle-core .core-sub{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:#cbd5e1;margin-top:2px}
+    .stake{position:absolute;transform:translate(-50%,-50%);text-align:center}
+    .stake .node{
+      width:82px;height:82px;border-radius:26px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;
+      box-shadow:0 16px 36px rgba(15,23,42,.08);font-size:1.4rem
+    }
+    .stake .nm{margin-top:10px;font-size:.92rem;font-weight:700}
+    .stake .role{font-size:.78rem;color:#64748b;margin-top:3px}
+    .roadmap{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:14px;align-items:start
+    }
+    .road{
+      position:relative;background:#fff;border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow-soft)
+    }
+    .road:not(:last-child):after{
+      content:"";position:absolute;right:-22px;top:50%;width:22px;height:3px;background:linear-gradient(90deg,var(--navy),#94a3b8);
+      transform:translateY(-50%);border-radius:99px
+    }
+    .road .num{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:14px;background:var(--navy);color:#fff;font-weight:800;font-size:.88rem}
+    .road h4{margin:14px 0 8px;font-size:1.05rem}
+    .road p{margin:0;color:#64748b;font-size:.95rem;line-height:1.6}
+    .demo-shell{
+      display:grid;grid-template-columns:260px 1fr;min-height:860px;border-radius:34px;overflow:hidden;
+      background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)
+    }
+    .sidebar{
+      background:#f8fafc;border-right:1px solid var(--line);padding:22px
+    }
+    .side-brand{display:flex;align-items:center;gap:12px}
+    .side-mark{width:44px;height:44px;border-radius:16px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}
+    .side-nav{display:grid;gap:8px;margin-top:28px}
+    .side-item{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;color:#64748b;cursor:pointer;transition:.2s ease
+    }
+    .side-item:hover{background:#fff}
+    .side-item.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-soft)}
+    .side-item .left{display:flex;gap:10px;align-items:center}
+    .insight-card{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}
+    .demo-main{padding:20px;background:linear-gradient(180deg,#fff,#f8fafc)}
+    .hero-panel{
+      display:grid;grid-template-columns:1.2fr .8fr;gap:16px
+    }
+    .dark-card{
+      background:#0f172a;color:#fff;border-radius:28px;padding:22px;box-shadow:var(--shadow)
+    }
+    .dark-title{font-size:2rem;font-weight:800;letter-spacing:-.03em}
+    .dark-sub{color:#cbd5e1;font-size:.95rem;line-height:1.7;max-width:62ch}
+    .target-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:16px;border-radius:22px}
+    .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+    .metric{
+      background:#fff;border:1px solid rgba(226,232,240,.9);border-radius:22px;padding:16px;box-shadow:var(--shadow-soft)
+    }
+    .metric .label{font-size:.82rem;color:#64748b}
+    .metric .value{font-size:2rem;font-weight:800;letter-spacing:-.04em;margin-top:8px}
+    .metric .bar{height:8px;background:#e2e8f0;border-radius:999px;margin-top:14px;overflow:hidden}
+    .metric .bar > span{display:block;height:100%;border-radius:999px}
+    .white-card{
+      background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow-soft)
+    }
+    .target-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .pill{
+      padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#475569;font-size:.85rem;cursor:pointer
+    }
+    .pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .match-box{margin-top:16px;border:1px solid var(--line);border-radius:26px;padding:18px;background:linear-gradient(180deg,#fff,#f8fafc)}
+    .match-num{font-size:3.4rem;font-weight:850;letter-spacing:-.06em}
+    .meter{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+    .meter > span{display:block;height:100%;background:var(--navy);border-radius:999px;transition:width .45s ease}
+    .split-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;margin-top:16px}
+    .radar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .radar-item{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px}
+    .radar-item .r-top{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+    .radar-item .r-bar{height:8px;background:#e2e8f0;border-radius:999px;margin-top:10px;overflow:hidden}
+    .radar-item .r-bar > span{display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--teal));border-radius:999px}
+    .stack{display:grid;gap:14px}
+    .gap-item,.road-item,.insight-box{border:1px solid var(--line);background:#f8fafc;border-radius:20px;padding:14px}
+    .loop-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+    .loop-step{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+    .loop-step .num{width:36px;height:36px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center;margin:0 auto 10px;font-size:.82rem;font-weight:800}
+    .footer{padding:26px 0 40px;color:#64748b;font-size:.92rem;text-align:center}
+    .hidden{display:none}
+
+    @media (max-width: 1100px){
+      .hero-grid,.grid-4,.grid-2,.roadmap,.hero-panel,.split-grid,.demo-shell{grid-template-columns:1fr}
+      .road:not(:last-child):after{display:none}
+      .stage,.stakeholder-stage{min-height:620px}
+      .canvas{height:520px}
+      .demo-shell{min-height:auto}
+      .sidebar{border-right:0;border-bottom:1px solid var(--line)}
+    }
+    @media (max-width: 760px){
+      h1{font-size:2.35rem}
+      h2{font-size:1.95rem}
+      .hero-cards{grid-template-columns:1fr}
+      .canvas{height:640px}
+      .stage,.stakeholder-stage{min-height:720px}
+      .hero-grid{padding-top:28px}
+      .metric-grid,.radar-grid,.loop-grid{grid-template-columns:1fr}
+      .nav-inner{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-mark">NiTi</div>
+        <div>
+          <div class="brand-title">NiTi</div>
+          <div class="brand-sub">AI Competency & Career Navigation for Higher Education</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <button class="chip active" data-page="1">Overview</button>
+        <button class="chip" data-page="2">Workflow</button>
+        <button class="chip" data-page="3">Demo</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- PAGE 1 -->
+    <section class="page container" id="page-1">
+      <div class="hero-grid">
+        <div>
+          <div class="badge"><span class="dot"></span> Product portfolio for AI-driven student career navigation</div>
+          <h1>AI Competency &amp; Career Navigation for Higher Education</h1>
+          <p class="lead">
+            NiTi adalah mesin intelijen navigasi kompetensi dan karier berbasis AI yang terintegrasi dengan Student Portal,
+            Career Center, dan Portal Alumni untuk menghasilkan rekomendasi kompetensi yang personal, adaptif, dan berbasis data.
+          </p>
+          <div class="actions">
+            <button class="btn btn-primary" data-scroll-to="workflow-section">Explore Workflow <span>→</span></button>
+            <button class="btn btn-secondary" data-page-target="3">Live Demo</button>
+          </div>
+          <div class="hero-cards">
+            <div class="mini-card">
+              <div class="mini-num">4</div>
+              <div class="mini-txt">Sumber data utama: universitas, mahasiswa, industri, pemerintah.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-num">6</div>
+              <div class="mini-txt">Stakeholder penting yang saling terhubung dalam ekosistem NiTi.</div>
+            </div>
+            <div class="mini-card">
+              <div class="mini-num">5</div>
+              <div class="mini-txt">Tahap implementasi: perancangan hingga maintenance berkala.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage">
+          <div class="stage-top">
+            <small>NiTi Ecosystem</small>
+            <strong>One engine. One ecosystem. One competency profile.</strong>
+          </div>
+          <div class="canvas">
+            <svg class="flow-lines" viewBox="0 0 1000 420" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#2563eb" stop-opacity=".8" />
+                  <stop offset="100%" stop-color="#14b8a6" stop-opacity=".8" />
+                </linearGradient>
+              </defs>
+              <path d="M210 110 C320 68, 360 68, 446 130" stroke="url(#g1)" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="10 9">
+                <animate attributeName="stroke-dashoffset" values="0;180" dur="6s" repeatCount="indefinite" />
+              </path>
+              <path d="M210 310 C320 350, 360 350, 446 290" stroke="url(#g1)" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="10 9">
+                <animate attributeName="stroke-dashoffset" values="180;0" dur="6s" repeatCount="indefinite" />
+              </path>
+              <path d="M790 110 C680 68, 640 68, 554 130" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="10 9">
+                <animate attributeName="stroke-dashoffset" values="0;180" dur="6s" repeatCount="indefinite" />
+              </path>
+              <path d="M790 310 C680 350, 640 350, 554 290" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="10 9">
+                <animate attributeName="stroke-dashoffset" values="180;0" dur="6s" repeatCount="indefinite" />
+              </path>
+            </svg>
+
+            <div class="diagram-node" style="left:17%;top:22%">
+              <div class="node-icon" style="color:#2563eb">U</div>
+              <div class="node-label">University</div>
+            </div>
+            <div class="diagram-node" style="left:17%;top:78%">
+              <div class="node-icon" style="color:#14b8a6">S</div>
+              <div class="node-label">Student</div>
+            </div>
+            <div class="diagram-node" style="left:83%;top:22%">
+              <div class="node-icon" style="color:#f59e0b">I</div>
+              <div class="node-label">Industry</div>
+            </div>
+            <div class="diagram-node" style="left:83%;top:78%">
+              <div class="node-icon" style="color:#22c55e">G</div>
+              <div class="node-label">Government</div>
+            </div>
+
+            <div class="engine-core">
+              <div>
+                <div class="engine-logo">NiTi</div>
+                <div class="engine-title">NiTi</div>
+                <div class="engine-sub">AI Engine</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="problem-section">
+        <div class="title-row">
+          <div>
+            <div class="kicker"><span class="spark"></span> Problem landscape</div>
+            <h2>Masalah utama bukan kekurangan data, tetapi belum adanya mesin integrasi.</h2>
+          </div>
+        </div>
+        <div class="grid-4">
+          <div class="card pad"><div class="stat">62%</div><div class="stat-sub">Belum memiliki rencana karier yang jelas.</div></div>
+          <div class="card pad"><div class="stat">52.8%</div><div class="stat-sub">Belum melakukan eksplorasi karier memadai.</div></div>
+          <div class="card pad"><div class="stat">42%</div><div class="stat-sub">Mengalami kebingungan memilih profesi.</div></div>
+          <div class="card pad"><div class="stat">63%</div><div class="stat-sub">Bekerja di luar bidang studi.</div></div>
+        </div>
+      </div>
+
+      <div class="section" id="data-section">
+        <div class="title-row">
+          <div>
+            <div class="kicker"><span class="spark"></span> Data ecosystem</div>
+            <h2>NiTi mengintegrasikan empat sumber data utama sebagai dasar analisis kompetensi.</h2>
+            <p class="lead">Tantangannya bukan lagi ketersediaan data, melainkan fragmentasi data. NiTi menyatukan sumber-sumber ini menjadi satu alur intelijen yang kontinu.</p>
+          </div>
+        </div>
+        <div class="grid-4">
+          <div class="card pad source-card">
+            <div class="head"><div class="icon-box" style="background:#2563eb">🏫</div><div><h3>Perguruan Tinggi</h3><p>Data akademik, learning outcomes, tracer study, portal alumni.</p></div></div>
+            <ul class="bullet-list"><li><span class="check">✓</span>Data akademik</li><li><span class="check">✓</span>Learning outcomes</li><li><span class="check">✓</span>Tracer study</li><li><span class="check">✓</span>Portal alumni</li></ul>
+          </div>
+          <div class="card pad source-card">
+            <div class="head"><div class="icon-box" style="background:#14b8a6">👤</div><div><h3>Mahasiswa</h3><p>Minat, aspirasi, portofolio, prestasi, sertifikasi.</p></div></div>
+            <ul class="bullet-list"><li><span class="check">✓</span>Minat &amp; aspirasi</li><li><span class="check">✓</span>Portofolio</li><li><span class="check">✓</span>Prestasi</li><li><span class="check">✓</span>Sertifikasi</li></ul>
+          </div>
+          <div class="card pad source-card">
+            <div class="head"><div class="icon-box" style="background:#f59e0b">🏭</div><div><h3>Industri</h3><p>Kebutuhan jabatan, tren keterampilan, LMI, skill demand.</p></div></div>
+            <ul class="bullet-list"><li><span class="check">✓</span>Kebutuhan jabatan</li><li><span class="check">✓</span>Tren keterampilan</li><li><span class="check">✓</span>Labour market intelligence</li><li><span class="check">✓</span>Skill demand</li></ul>
+          </div>
+          <div class="card pad source-card">
+            <div class="head"><div class="icon-box" style="background:#22c55e">🏛️</div><div><h3>Pemerintah</h3><p>Program talenta, sertifikasi nasional, kebijakan strategis.</p></div></div>
+            <ul class="bullet-list"><li><span class="check">✓</span>Program talenta</li><li><span class="check">✓</span>Sertifikasi nasional</li><li><span class="check">✓</span>Kebijakan pendidikan</li><li><span class="check">✓</span>Kebijakan ketenagakerjaan</li></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="stakeholder-section">
+        <div class="title-row">
+          <div>
+            <div class="kicker"><span class="spark"></span> Stakeholder ecosystem</div>
+            <h2>Stakeholder NiTi digambar sebagai ekosistem melingkar yang berpusat pada engine.</h2>
+            <p class="lead">Setiap aktor memiliki peran yang berbeda, tetapi semuanya mengarah pada pembentukan profil kompetensi mahasiswa yang lebih akurat.</p>
+          </div>
+        </div>
+        <div class="stakeholder-stage">
+          <svg class="flow-lines" viewBox="0 0 1000 680" preserveAspectRatio="none">
+            <circle cx="500" cy="340" r="116" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="7 10"></circle>
+            <path d="M500 340 L500 160" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+            <path d="M500 340 L680 220" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+            <path d="M500 340 L680 460" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+            <path d="M500 340 L500 520" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+            <path d="M500 340 L320 460" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+            <path d="M500 340 L320 220" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"></path>
+          </svg>
+          <div class="circle-core">
+            <div>
+              <div class="core-logo">NiTi</div>
+              <div class="core-title">NiTi</div>
+              <div class="core-sub">AI Engine</div>
+            </div>
+          </div>
+          <div class="stake" style="left:50%;top:17%"><div class="node">👥</div><div class="nm">Students</div><div class="role">pengguna utama</div></div>
+          <div class="stake" style="left:78%;top:27%"><div class="node">🎓</div><div class="nm">Universities</div><div class="role">data akademik</div></div>
+          <div class="stake" style="left:78%;top:73%"><div class="node">🏭</div><div class="nm">Industry</div><div class="role">demand kompetensi</div></div>
+          <div class="stake" style="left:50%;top:83%"><div class="node">🏛️</div><div class="nm">Government</div><div class="role">arah kebijakan</div></div>
+          <div class="stake" style="left:22%;top:73%"><div class="node">💼</div><div class="nm">Career Center</div><div class="role">penghubung karier</div></div>
+          <div class="stake" style="left:22%;top:27%"><div class="node">🔁</div><div class="nm">Portal Alumni</div><div class="role">tracer loop</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="card pad" style="display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap">
+          <div style="max-width:700px">
+            <div class="kicker" style="margin-bottom:12px"><span class="spark"></span> Value proposition</div>
+            <h2 style="margin-bottom:10px">Membantu mahasiswa menemukan kompetensi yang tepat, jalur karier yang relevan, dan keputusan yang lebih presisi.</h2>
+          </div>
+          <div class="grid-2" style="min-width:min(520px,100%);flex:1">
+            <div class="gap-item">Career clarity</div>
+            <div class="gap-item">Competency growth</div>
+            <div class="gap-item">Industry alignment</div>
+            <div class="gap-item">Closed-loop intelligence</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="page container hidden" id="page-2">
+      <div class="section" id="workflow-section">
+        <div class="title-row">
+          <div>
+            <div class="kicker"><span class="spark"></span> Workflow &amp; roadmap</div>
+            <h2>Mekanisme kerja NiTi dibangun sebagai workflow visual, bukan daftar blok teks.</h2>
+            <p class="lead">Halaman ini menampilkan alur integrasi sumber data, engine, output, closed-loop feedback, dan roadmap implementasi secara visual dan mudah diikuti.</p>
+          </div>
+        </div>
+
+        <div class="card" style="overflow:hidden">
+          <div class="grid-2" style="gap:0">
+            <div style="padding:24px;border-right:1px solid var(--line);background:#fff">
+              <div class="kicker" style="margin-bottom:10px"><span class="spark"></span> Input layer</div>
+              <p style="margin:0 0 18px;color:#64748b;line-height:1.7">Sumber data yang mengalir masuk ke NiTi.</p>
+              <div style="display:grid;gap:10px">
+                <div class="road-item"><strong>🏫 Perguruan Tinggi</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">data akademik, outcomes, tracer</div></div>
+                <div class="road-item"><strong>👤 Mahasiswa</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">minat, portofolio, sertifikasi</div></div>
+                <div class="road-item"><strong>🏭 Industri</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">demand kompetensi, LMI</div></div>
+                <div class="road-item"><strong>🏛️ Pemerintah</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">program talenta, kebijakan</div></div>
+              </div>
+            </div>
+
+            <div style="position:relative;min-height:760px;background:radial-gradient(circle at center, rgba(20,184,166,.10), transparent 34%), linear-gradient(180deg,#fff,#f8fafc)">
+              <svg class="flow-lines" viewBox="0 0 1000 760" preserveAspectRatio="none">
+                <path d="M150 180 C260 180, 320 180, 430 180" stroke="#14b8a6" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="0;190" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M150 300 C260 300, 320 300, 430 300" stroke="#2563eb" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="190;0" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M150 420 C260 420, 320 420, 430 420" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="0;190" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M150 540 C260 540, 320 540, 430 540" stroke="#22c55e" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="190;0" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M570 180 C680 180, 740 180, 850 180" stroke="#2563eb" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="0;190" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M570 300 C680 300, 740 300, 850 300" stroke="#14b8a6" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="190;0" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M570 420 C680 420, 740 420, 850 420" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="0;190" dur="6s" repeatCount="indefinite"/></path>
+                <path d="M570 540 C680 540, 740 540, 850 540" stroke="#22c55e" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="10 9"><animate attributeName="stroke-dashoffset" values="190;0" dur="6s" repeatCount="indefinite"/></path>
+              </svg>
+              <div class="diagram-node" style="left:19%;top:21%"><div class="node-icon" style="color:#2563eb">U</div></div>
+              <div class="diagram-node" style="left:19%;top:37%"><div class="node-icon" style="color:#14b8a6">S</div></div>
+              <div class="diagram-node" style="left:19%;top:53%"><div class="node-icon" style="color:#f59e0b">I</div></div>
+              <div class="diagram-node" style="left:19%;top:69%"><div class="node-icon" style="color:#22c55e">G</div></div>
+
+              <div class="engine-core" style="width:234px;height:234px">
+                <div>
+                  <div class="engine-logo" style="width:66px;height:66px">NiTi</div>
+                  <div class="engine-title">NiTi</div>
+                  <div class="engine-sub">AI Engine</div>
+                  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px;font-size:.74rem;color:#475569">
+                    <div class="gap-item" style="padding:10px">Machine Learning</div>
+                    <div class="gap-item" style="padding:10px">NLP</div>
+                    <div class="gap-item" style="padding:10px">Learning Analytics</div>
+                    <div class="gap-item" style="padding:10px">Recommendation</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="diagram-node" style="left:81%;top:21%"><div class="node-icon" style="color:#2563eb">CP</div><div class="node-label">Competency Profile</div></div>
+              <div class="diagram-node" style="left:81%;top:37%"><div class="node-icon" style="color:#14b8a6">SG</div><div class="node-label">Skill Gap</div></div>
+              <div class="diagram-node" style="left:81%;top:53%"><div class="node-icon" style="color:#f59e0b">CR</div><div class="node-label">Career Match</div></div>
+              <div class="diagram-node" style="left:81%;top:69%"><div class="node-icon" style="color:#22c55e">LR</div><div class="node-label">Learning Roadmap</div></div>
+            </div>
+
+            <div style="padding:24px;border-left:1px solid var(--line);background:#fff">
+              <div class="kicker" style="margin-bottom:10px"><span class="spark"></span> Output layer</div>
+              <p style="margin:0 0 18px;color:#64748b;line-height:1.7">Hasil olahan NiTi yang siap dipakai mahasiswa.</p>
+              <div style="display:grid;gap:10px">
+                <div class="road-item"><strong>Competency Profile</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">profil kompetensi dinamis</div></div>
+                <div class="road-item"><strong>Skill Gap Analysis</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">kesenjangan kompetensi</div></div>
+                <div class="road-item"><strong>Career Recommendation</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">jalur profesi relevan</div></div>
+                <div class="road-item"><strong>Learning Roadmap</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">langkah pengembangan</div></div>
+                <div class="road-item"><strong>Closed-loop Feedback</strong><div style="color:#64748b;margin-top:4px;font-size:.94rem">update profil berkelanjutan</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-grid" style="margin-top:16px">
+          <div class="card pad">
+            <div class="kicker" style="margin-bottom:12px"><span class="spark"></span> Closed-loop feedback</div>
+            <div style="display:grid;gap:12px">
+              <div class="road-item">1. Student activity</div>
+              <div class="road-item">2. Course completion</div>
+              <div class="road-item">3. Certification</div>
+              <div class="road-item">4. Competition</div>
+              <div class="road-item">5. Portfolio update</div>
+              <div class="road-item">6. NiTi recalibration</div>
+            </div>
+          </div>
+
+          <div class="card pad">
+            <div class="kicker" style="margin-bottom:12px"><span class="spark"></span> Roadmap implementasi</div>
+            <div class="roadmap">
+              <div class="road"><div class="num">01</div><h4>Perancangan</h4><p>Konsep, arsitektur, kebutuhan data, dan MoU stakeholder.</p></div>
+              <div class="road"><div class="num">02</div><h4>Pilot Project</h4><p>Uji di kampus unggulan dan kampus pelosok untuk banding kinerja.</p></div>
+              <div class="road"><div class="num">03</div><h4>Penyempurnaan</h4><p>Iterasi berdasarkan feedback, performa, dan skalabilitas.</p></div>
+              <div class="road"><div class="num">04</div><h4>Launching</h4><p>Integrasi bertahap ke seluruh kampus Indonesia.</p></div>
+              <div class="road"><div class="num">05</div><h4>Maintenance</h4><p>Perbaikan berkala tiap semester atau saat ada kendala urgent.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3 -->
+    <section class="page container hidden" id="page-3">
+      <div class="section">
+        <div class="title-row">
+          <div>
+            <div class="kicker"><span class="spark"></span> Interactive demo</div>
+            <h2>Demo fitur inti NiTi dirancang sebagai dashboard mahasiswa yang hidup.</h2>
+            <p class="lead">Satu pengguna, satu profil kompetensi, dan rekomendasi yang berubah secara adaptif saat target karier dipilih.</p>
+          </div>
+        </div>
+
+        <div class="demo-shell">
+          <aside class="sidebar">
+            <div class="side-brand">
+              <div class="side-mark">N</div>
+              <div>
+                <div style="font-weight:800">NiTi</div>
+                <div style="font-size:.78rem;color:#64748b">student dashboard demo</div>
+              </div>
+            </div>
+            <div class="side-nav">
+              <div class="side-item active"><span class="left">📊 <span>Overview</span></span><span>●</span></div>
+              <div class="side-item"><span class="left">🎯 <span>Competencies</span></span></div>
+              <div class="side-item"><span class="left">💼 <span>Career Navigator</span></span></div>
+              <div class="side-item"><span class="left">🧭 <span>Roadmap</span></span></div>
+              <div class="side-item"><span class="left">📁 <span>Portfolio</span></span></div>
+              <div class="side-item"><span class="left">🏆 <span>Achievements</span></span></div>
+              <div class="side-item"><span class="left">⚙️ <span>Settings</span></span></div>
+            </div>
+            <div class="insight-card">
+              <div style="font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:#64748b">Quick insight</div>
+              <p style="margin-top:10px;font-size:.95rem;line-height:1.65;color:#334155">
+                NiTi memprioritaskan rekomendasi yang paling dekat dengan profil kompetensi dan target karier mahasiswa.
+              </p>
+            </div>
+          </aside>
+
+          <section class="demo-main">
+            <div class="hero-panel">
+              <div class="dark-card">
+                <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start">
+                  <div>
+                    <div style="color:#cbd5e1;font-size:.9rem">Good morning, Farasena</div>
+                    <div class="dark-title" style="margin-top:4px">Competency Journey</div>
+                    <p class="dark-sub" style="margin-top:14px">
+                      Dashboard ini memperlihatkan perkembangan kompetensi, kecocokan karier, dan rekomendasi belajar secara langsung.
+                    </p>
+                  </div>
+                  <div class="target-box">
+                    <div style="font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:#cbd5e1">Selected target</div>
+                    <div style="margin-top:8px;font-size:1.05rem;font-weight:800" id="targetTitle">ESG Analyst</div>
+                  </div>
+                </div>
+
+                <div class="metric-grid" style="margin-top:18px">
+                  <div class="metric">
+                    <div class="label">Competency Score</div>
+                    <div class="value">84</div>
+                    <div class="bar"><span style="width:84%;background:#14b8a6"></span></div>
+                    <div class="stat-sub">Profil kompetensi terus diperbarui dari aktivitas terbaru.</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">Career Readiness</div>
+                    <div class="value">76</div>
+                    <div class="bar"><span style="width:76%;background:#2563eb"></span></div>
+                    <div class="stat-sub">Kesiapan kerja berdasarkan skill, minat, dan portofolio.</div>
+                  </div>
+                  <div class="metric">
+                    <div class="label">Skill Gap</div>
+                    <div class="value">5</div>
+                    <div class="bar"><span style="width:50%;background:#f59e0b"></span></div>
+                    <div class="stat-sub">Kesenjangan utama yang perlu ditutup untuk target karier.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="white-card">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                  <div>
+                    <div style="font-size:.82rem;color:#64748b">Target careers</div>
+                    <div style="font-size:1.15rem;font-weight:800">Career Match</div>
+                  </div>
+                  <div style="font-size:1.1rem">🎯</div>
+                </div>
+                <div class="target-pills">
+                  <button class="pill active career-pill" data-career="ESG Analyst">ESG Analyst</button>
+                  <button class="pill career-pill" data-career="Environmental Consultant">Environmental Consultant</button>
+                  <button class="pill career-pill" data-career="Waste Engineer">Waste Engineer</button>
+                </div>
+                <div class="match-box">
+                  <div style="display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap">
+                    <div>
+                      <div style="font-size:.82rem;color:#64748b" id="scoreLabel">ESG Alignment</div>
+                      <div class="match-num" id="matchNum">92%</div>
+                    </div>
+                    <div style="border-radius:999px;padding:10px 14px;background:rgba(20,184,166,.10);color:#0f766e;font-size:.84rem;font-weight:700">adaptive</div>
+                  </div>
+                  <div class="meter" style="margin-top:16px"><span id="matchBar" style="width:92%"></span></div>
+                  <div class="grid-2" style="margin-top:14px">
+                    <div class="road-item">Readiness: <strong id="readinessVal">79%</strong></div>
+                    <div class="road-item">Gap: <strong>3 core areas</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="split-grid">
+              <div class="white-card">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                  <div>
+                    <div style="font-size:.82rem;color:#64748b">Competency Radar</div>
+                    <div style="font-size:1.15rem;font-weight:800">Your profile snapshot</div>
+                  </div>
+                  <div style="font-size:1.1rem">📡</div>
+                </div>
+                <div class="radar-grid" style="margin-top:16px">
+                  <div class="radar-item"><div class="r-top"><span>Analytical Thinking</span><strong>88%</strong></div><div class="r-bar"><span style="width:88%"></span></div></div>
+                  <div class="radar-item"><div class="r-top"><span>Environmental Knowledge</span><strong>91%</strong></div><div class="r-bar"><span style="width:91%"></span></div></div>
+                  <div class="radar-item"><div class="r-top"><span>Communication</span><strong>75%</strong></div><div class="r-bar"><span style="width:75%"></span></div></div>
+                  <div class="radar-item"><div class="r-top"><span>Leadership</span><strong>68%</strong></div><div class="r-bar"><span style="width:68%"></span></div></div>
+                  <div class="radar-item"><div class="r-top"><span>Data Literacy</span><strong>72%</strong></div><div class="r-bar"><span style="width:72%"></span></div></div>
+                  <div class="radar-item"><div class="r-top"><span>Problem Solving</span><strong>85%</strong></div><div class="r-bar"><span style="width:85%"></span></div></div>
+                </div>
+              </div>
+
+              <div class="stack">
+                <div class="white-card">
+                  <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                    <div>
+                      <div style="font-size:.82rem;color:#64748b">Skill Gap</div>
+                      <div style="font-size:1.15rem;font-weight:800">Needs to improve</div>
+                    </div>
+                    <div>🧩</div>
+                  </div>
+                  <div class="stack" style="margin-top:14px" id="gapList">
+                    <div class="gap-item">Sustainability reporting</div>
+                    <div class="gap-item">Data analysis</div>
+                    <div class="gap-item">ESG framework</div>
+                  </div>
+                </div>
+
+                <div class="white-card">
+                  <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                    <div>
+                      <div style="font-size:.82rem;color:#64748b">Learning Roadmap</div>
+                      <div style="font-size:1.15rem;font-weight:800">Recommended actions</div>
+                    </div>
+                    <div>🧭</div>
+                  </div>
+                  <div class="stack" style="margin-top:14px" id="roadmapList">
+                    <div class="gap-item">ISO 14001</div>
+                    <div class="gap-item">Sustainability Project</div>
+                    <div class="gap-item">Data Visualization</div>
+                    <div class="gap-item">Portfolio Review</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="split-grid">
+              <div class="white-card">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                  <div>
+                    <div style="font-size:.82rem;color:#64748b">AI Insight</div>
+                    <div style="font-size:1.15rem;font-weight:800">Why this recommendation?</div>
+                  </div>
+                  <div>✨</div>
+                </div>
+                <p style="margin-top:14px;color:#475569;line-height:1.8" id="insightText">
+                  Profil Anda kuat di analisis dan konteks lingkungan. Fokus peningkatan ada pada pelaporan ESG dan analisis data bisnis.
+                </p>
+              </div>
+              <div class="white-card">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                  <div>
+                    <div style="font-size:.82rem;color:#64748b">Closed-loop impact</div>
+                    <div style="font-size:1.15rem;font-weight:800">How NiTi updates</div>
+                  </div>
+                  <div>🔁</div>
+                </div>
+                <div class="loop-grid">
+                  <div class="loop-step"><div class="num">1</div>Activity</div>
+                  <div class="loop-step"><div class="num">2</div>Learning</div>
+                  <div class="loop-step"><div class="num">3</div>Certification</div>
+                  <div class="loop-step"><div class="num">4</div>Portfolio</div>
+                  <div class="loop-step"><div class="num">5</div>Update</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      )}
+    </section>
+  </main>
+
+  <div class="footer container">
+    NiTi — AI Competency & Career Navigation for Higher Education
+  </div>
+
+  <script>
+    const pages = [...document.querySelectorAll('.page')];
+    const chips = [...document.querySelectorAll('[data-page]')];
+    const pageTargets = [...document.querySelectorAll('[data-page-target]')];
+    const scrollButtons = [...document.querySelectorAll('[data-scroll-to]')];
+
+    function showPage(n) {
+      pages.forEach((p, i) => p.classList.toggle('hidden', i + 1 !== n));
+      chips.forEach(c => c.classList.toggle('active', Number(c.dataset.page) === n));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    chips.forEach(btn => btn.addEventListener('click', () => showPage(Number(btn.dataset.page))));
+    pageTargets.forEach(btn => btn.addEventListener('click', () => showPage(Number(btn.dataset.pageTarget))));
+    scrollButtons.forEach(btn => btn.addEventListener('click', () => document.getElementById(btn.dataset.scrollTo)?.scrollIntoView({ behavior: 'smooth' })));
+
+    const careerData = {
+      'ESG Analyst': {
+        match: 92,
+        readiness: 79,
+        gap: ['Sustainability reporting', 'Data analysis', 'ESG framework'],
+        roadmap: ['ISO 14001', 'Sustainability Project', 'Data Visualization', 'Portfolio Review'],
+        insight: 'Profil Anda kuat di analisis dan konteks lingkungan. Fokus peningkatan ada pada pelaporan ESG dan analisis data bisnis.',
+        label: 'ESG Alignment'
+      },
+      'Environmental Consultant': {
+        match: 89,
+        readiness: 83,
+        gap: ['Regulatory writing', 'Client communication', 'Project scoping'],
+        roadmap: ['AMDAL Basics', 'Environmental Audit', 'Stakeholder Communication', 'Field Project'],
+        insight: 'Kecocokan tinggi karena kompetensi lingkungan dan problem solving sudah kuat. Tingkatkan kemampuan konsultatif dan regulasi.',
+        label: 'Consulting Fit'
+      },
+      'Waste Engineer': {
+        match: 87,
+        readiness: 81,
+        gap: ['Process optimization', 'GIS mapping', 'System modeling'],
+        roadmap: ['Waste Process Lab', 'GIS Training', 'Plant Visit', 'Capstone Portfolio'],
+        insight: 'Jalur ini paling dekat dengan kompetensi inti. NiTi merekomendasikan penguatan teknis dan portofolio proyek nyata.',
+        label: 'Engineering Fit'
+      }
+    };
+
+    const careerButtons = [...document.querySelectorAll('.career-pill')];
+    const targetTitle = document.getElementById('targetTitle');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const matchNum = document.getElementById('matchNum');
+    const matchBar = document.getElementById('matchBar');
+    const readinessVal = document.getElementById('readinessVal');
+    const gapList = document.getElementById('gapList');
+    const roadmapList = document.getElementById('roadmapList');
+    const insightText = document.getElementById('insightText');
+
+    function renderCareer(name) {
+      const data = careerData[name];
+      if (!data) return;
+      targetTitle.textContent = name;
+      scoreLabel.textContent = data.label;
+      matchNum.textContent = data.match + '%';
+      matchBar.style.width = data.match + '%';
+      readinessVal.textContent = data.readiness + '%';
+      gapList.innerHTML = data.gap.map(item => `<div class="gap-item">${item}</div>`).join('');
+      roadmapList.innerHTML = data.roadmap.map(item => `<div class="gap-item">${item}</div>`).join('');
+      insightText.textContent = data.insight;
+      careerButtons.forEach(b => b.classList.toggle('active', b.dataset.career === name));
+    }
+
+    careerButtons.forEach(btn => btn.addEventListener('click', () => renderCareer(btn.dataset.career)));
+    renderCareer('ESG Analyst');
+  </script>
+</body>
+</html>
